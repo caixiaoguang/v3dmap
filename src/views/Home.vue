@@ -1,36 +1,87 @@
 <template>
   <div class="home">
     <vc-viewer
-      :homeButton="true"
       :showCredit="false"
       :fullscreenButton="true"
       :imageryProvider="imageryProvider"
       @ready="viewerReady"
-    ></vc-viewer>
+    >
+      <vc-layer-imagery>
+        <vc-provider-imagery-tianditu
+          mapStyle="img_w"
+          :maximumLevel="18"
+          :token="token"
+        />
+      </vc-layer-imagery>
+
+      <vc-provider-terrain-tianditu :token="token" />
+
+      <vc-navigation
+        :printOpts="false"
+        :locationOpts="false"
+        :otherOpts="{ position: 'bottom' }"
+      />
+
+      <vc-measurements
+        ref="measurementsRef"
+        position="top-right"
+        :measurements="['polyline', 'area', 'height']"
+        :offset="[130, 30]"
+      />
+
+      <!-- <rain /> -->
+      <layer/>
+
+      <!-- <vc-primitive-tileset
+        url="https://zouyaoji.top/vue-cesium/SampleData/Cesium3DTiles/Tilesets/dayanta/tileset.json"
+        @readyPromise="onTilesetReady"
+      ></vc-primitive-tileset> -->
+    </vc-viewer>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-
+import Rain from "@/components/Rain";
+import Layer from "@/components/Layer"
 export default {
   name: "Home",
-  components: {},
+  components: {
+    Rain,
+    Layer
+  },
   data() {
-    return { imageryProvider: null };
+    return {
+      imageryProvider: null,
+      token: "3cb95943baef24c1642b58bbebce332c",
+      measureOptions: { color: "#3f4854" },
+    };
   },
   methods: {
     viewerReady(e) {
       const { Cesium, viewer, vm } = e;
-      const token = "3cb95943baef24c1642b58bbebce332c";
-      const tdtUrl = "https://t{s}.tianditu.gov.cn/";
-      const subdomains = ["0", "1", "2", "3", "4", "5", "6", "7"];
-      this.imageryProvider = new Cesium.UrlTemplateImageryProvider({
-        url: tdtUrl + "DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + token,
-        subdomains: subdomains,
-        tilingScheme: new Cesium.WebMercatorTilingScheme(),
-        maximumLevel: 18,
-      });
+    },
+    onTilesetReady(tileset, viewer) {
+      const cartographic = Cesium.Cartographic.fromCartesian(
+        tileset.boundingSphere.center
+      );
+      const surface = Cesium.Cartesian3.fromRadians(
+        cartographic.longitude,
+        cartographic.latitude,
+        cartographic.height
+      );
+      const offset = Cesium.Cartesian3.fromRadians(
+        cartographic.longitude,
+        cartographic.latitude,
+        5
+      );
+      const translation = Cesium.Cartesian3.subtract(
+        offset,
+        surface,
+        new Cesium.Cartesian3()
+      );
+      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+      viewer.zoomTo(tileset);
+      viewer.scene.globe.depthTestAgainstTerrain = true;
     },
   },
 };
