@@ -2,6 +2,7 @@
   <div class="home">
     <vc-viewer
       :showCredit="false"
+      :shouldAnimate="true"
       :fullscreenButton="true"
       :imageryProvider="imageryProvider"
       @ready="viewerReady"
@@ -30,7 +31,7 @@
       />
 
       <!-- <rain /> -->
-      <layer/>
+      <layer />
 
       <!-- <vc-primitive-tileset
         url="https://zouyaoji.top/vue-cesium/SampleData/Cesium3DTiles/Tilesets/dayanta/tileset.json"
@@ -42,12 +43,12 @@
 
 <script>
 import Rain from "@/components/Rain";
-import Layer from "@/components/Layer"
+import Layer from "@/components/Layer";
 export default {
   name: "Home",
   components: {
     Rain,
-    Layer
+    Layer,
   },
   data() {
     return {
@@ -59,6 +60,36 @@ export default {
   methods: {
     viewerReady(e) {
       const { Cesium, viewer, vm } = e;
+      window.viewer = viewer;
+      setTimeout(() => {
+        flyInACity();
+      }, 2000);
+      function flyInACity() {
+        var camera = viewer.scene.camera;
+        camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.98580932617188,
+            30.74843406689482,
+            1363.34038727246224
+          ),
+          complete: function () {
+            setTimeout(function () {
+              camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(
+                  104.98585975679403,
+                  30.75759944127251,
+                  1186.50838555841779
+                ),
+                orientation: {
+                  heading: Cesium.Math.toRadians(200.0),
+                  pitch: Cesium.Math.toRadians(-50.0),
+                },
+                easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+              });
+            }, 1000);
+          },
+        });
+      }
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(
