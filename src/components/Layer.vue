@@ -1,35 +1,19 @@
 <template>
-  <div>
-    <transition name="fade">
-      <div
-        class="drawer-button"
-        @click="showDrawer = true"
-        v-show="!showDrawer"
-      >
-        <i class="el-icon-s-unfold"></i>
-      </div>
-    </transition>
+  <!-- <div class="drawer-button" @click="showDrawer = true" v-show="!showDrawer">
+    <i class="el-icon-s-unfold"></i>
+  </div> -->
 
-    <el-drawer
-      direction="ltr"
-      :size="200"
-      v-model="showDrawer"
-      title="图层"
-      :modal="false"
-    >
-      <div class="layer-panel">
-        <div class="layer-item">
-          <div class="layer-name">
-            <i class="el-icon-sunny"></i>
-            <span>天气</span>
-          </div>
-          <div class="layer-switch">
-            <el-checkbox v-model="rain" @change="handleRain">雨</el-checkbox>
-            <el-checkbox v-model="snow" @change="handleSnow">雪</el-checkbox>
-          </div>
-        </div>
+  <div class="layer-panel">
+    <div class="layer-item">
+      <div class="layer-name">
+        <i class="el-icon-sunny"></i>
+        <span>天气</span>
       </div>
-    </el-drawer>
+      <div class="layer-switch">
+        <el-checkbox v-model="rain" @change="handleRain">雨</el-checkbox>
+        <el-checkbox v-model="snow" @change="handleSnow">雪</el-checkbox>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,9 +51,7 @@ export default {
         return;
       }
 
-   
-        this.collection = viewer.scene.postProcessStages;
-      
+      this.collection = viewer.scene.postProcessStages;
 
       if (type === "rain") {
         this.rainSystem = createRainStage();
@@ -91,17 +73,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$bgColor: #5f6368;
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+$bgColor: #3f4854;
 
 .drawer-button {
   position: absolute;
@@ -117,23 +89,32 @@ $bgColor: #5f6368;
 }
 
 .layer-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
   width: 200px;
   height: 100vh;
   padding: 12px 8px;
-  background-color: #fff;
-  box-shadow: rgb(201, 197, 197);
-  color: $bgColor;
+  padding-left: 15px;
+  background-color: $bgColor;
+  border: 2px solid #275d9283;
+
   .layer-name {
     font-size: 15px;
-    margin-bottom: 5px;
-    background-color: $bgColor;
-    border-radius: 5px;
+    background-color: #fff;
+    background-color: #409eff;
     color: #fff;
-    padding: 5px;
+    border-radius: 5px;
+    padding: 6px;
     i {
       margin-right: 5px;
       font-weight: 1000;
     }
+  }
+
+  .layer-switch {
+    padding: 5px;
   }
 }
 </style>

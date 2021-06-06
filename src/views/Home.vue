@@ -26,15 +26,14 @@
       <vc-measurements
         ref="measurementsRef"
         position="top-right"
-        :measurements="['polyline', 'area', 'height']"
+        :measurements="['polyline', 'area', 'vertical']"
         :offset="[130, 30]"
       />
 
-      <!-- <rain /> -->
       <layer />
 
       <!-- <vc-primitive-tileset
-        url="https://zouyaoji.top/vue-cesium/SampleData/Cesium3DTiles/Tilesets/dayanta/tileset.json"
+        url="http://159.75.121.194/3dtile/tileset.json"
         @readyPromise="onTilesetReady"
       ></vc-primitive-tileset> -->
     </vc-viewer>
@@ -42,18 +41,17 @@
 </template>
 
 <script>
-import Rain from "@/components/Rain";
 import Layer from "@/components/Layer";
 export default {
   name: "Home",
   components: {
-    Rain,
     Layer,
   },
   data() {
     return {
       imageryProvider: null,
-      token: "3cb95943baef24c1642b58bbebce332c",
+      // token: "3cb95943baef24c1642b58bbebce332c",
+      token: "0de59a2dff2555e94a670e2511996e6e",
       measureOptions: { color: "#3f4854" },
     };
   },
@@ -61,9 +59,9 @@ export default {
     viewerReady(e) {
       const { Cesium, viewer, vm } = e;
       window.viewer = viewer;
-      setTimeout(() => {
-        flyInACity();
-      }, 2000);
+      // setTimeout(() => {
+      //   flyInACity();
+      // }, 2000);
       function flyInACity() {
         var camera = viewer.scene.camera;
         camera.flyTo({
