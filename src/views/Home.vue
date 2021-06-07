@@ -4,7 +4,6 @@
       :showCredit="false"
       :shouldAnimate="true"
       :fullscreenButton="true"
-      :imageryProvider="imageryProvider"
       @ready="viewerReady"
     >
       <vc-layer-imagery>
@@ -15,7 +14,7 @@
         />
       </vc-layer-imagery>
 
-      <vc-provider-terrain-tianditu :token="token" />
+      <!-- <vc-provider-terrain-tianditu :token="token" /> -->
 
       <vc-navigation
         :printOpts="false"
@@ -49,7 +48,6 @@ export default {
   },
   data() {
     return {
-      imageryProvider: null,
       // token: "3cb95943baef24c1642b58bbebce332c",
       token: "0de59a2dff2555e94a670e2511996e6e",
       measureOptions: { color: "#3f4854" },
@@ -118,6 +116,6 @@ export default {
 
 <style lang="less" scoped>
 .home {
-  height: 100%;
+  height: calc(100% + 25px);
 }
 </style>

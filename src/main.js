@@ -10,8 +10,13 @@ import "vue-cesium/lib/theme-default/index.css";
 import './styles/main.scss'
 import './styles/element-variables.scss'
 
+const base_url = process.env.BASE_URL
+
 
 const app = createApp(App).use(router);
-app.use(VueCesium);
+app.use(VueCesium,
+    {
+        cesiumPath: "http://159.75.121.194"
+    });
 app.use(ElementPlus);
 app.mount('#app');
