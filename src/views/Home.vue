@@ -14,7 +14,7 @@
         />
       </vc-layer-imagery>
 
-      <!-- <vc-provider-terrain-tianditu :token="token" /> -->
+      <vc-provider-terrain-tianditu :token="token" />
 
       <vc-navigation
         :printOpts="false"
@@ -29,7 +29,9 @@
         :offset="[130, 30]"
       />
 
-      <layer />
+      <terrain-clip />
+
+      <!-- <layer /> -->
 
       <!-- <vc-primitive-tileset
         url="http://159.75.121.194/3dtile/tileset.json"
@@ -41,10 +43,13 @@
 
 <script>
 import Layer from "@/components/Layer";
+import TerrainClip from "@/components/TerrainClip";
+
 export default {
   name: "Home",
   components: {
     Layer,
+    TerrainClip,
   },
   data() {
     return {
@@ -56,10 +61,15 @@ export default {
   methods: {
     viewerReady(e) {
       const { Cesium, viewer, vm } = e;
+      window.Cesium = Cesium;
       window.viewer = viewer;
-      // setTimeout(() => {
-      //   flyInACity();
-      // }, 2000);
+
+      viewer.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees(117.220108, 31.834937, 3000),
+      });
+
+      viewer.scene.globe.depthTestAgainstTerrain = true;
+
       function flyInACity() {
         var camera = viewer.scene.camera;
         camera.flyTo({
@@ -116,6 +126,7 @@ export default {
 
 <style lang="less" scoped>
 .home {
-  height: calc(100% + 25px);
+  // height: calc(100% + 25px);
+  height: 100%;
 }
 </style>
