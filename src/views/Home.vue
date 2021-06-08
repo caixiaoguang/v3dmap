@@ -33,6 +33,8 @@
 
       <!-- <layer /> -->
 
+      <!-- <vc-drawings></vc-drawings> -->
+
       <!-- <vc-primitive-tileset
         url="http://159.75.121.194/3dtile/tileset.json"
         @readyPromise="onTilesetReady"
@@ -64,38 +66,12 @@ export default {
       window.Cesium = Cesium;
       window.viewer = viewer;
 
-      viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(117.220108, 31.834937, 3000),
-      });
+      // viewer.camera.setView({
+      //   destination: Cesium.Cartesian3.fromDegrees(117.220108, 31.834937, 3000),
+      // });
 
-      viewer.scene.globe.depthTestAgainstTerrain = true;
+      // viewer.scene.globe.depthTestAgainstTerrain = true;
 
-      function flyInACity() {
-        var camera = viewer.scene.camera;
-        camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(
-            104.98580932617188,
-            30.74843406689482,
-            1363.34038727246224
-          ),
-          complete: function () {
-            setTimeout(function () {
-              camera.flyTo({
-                destination: Cesium.Cartesian3.fromDegrees(
-                  104.98585975679403,
-                  30.75759944127251,
-                  1186.50838555841779
-                ),
-                orientation: {
-                  heading: Cesium.Math.toRadians(200.0),
-                  pitch: Cesium.Math.toRadians(-50.0),
-                },
-                easingFunction: Cesium.EasingFunction.LINEAR_NONE,
-              });
-            }, 1000);
-          },
-        });
-      }
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(
@@ -116,7 +92,7 @@ export default {
         surface,
         new Cesium.Cartesian3()
       );
-      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+      // tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
       viewer.zoomTo(tileset);
       viewer.scene.globe.depthTestAgainstTerrain = true;
     },
