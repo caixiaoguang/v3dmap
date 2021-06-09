@@ -1,6 +1,9 @@
 <template>
   <div class="terrain-clip-wrap">
-    <el-button size="mini" @click="init">挖方</el-button>
+    <el-button size="mini" @click="draw">click</el-button>
+    <el-button size="mini" @click="drawTool.cancelDraw()">cancel</el-button>
+    <el-button size="mini" @click="drawTool.clear()">clear</el-button>
+
     <div class="clip-planel">
       <el-input size="mini" v-model="height" @change="clip"></el-input>
     </div>
@@ -8,8 +11,9 @@
 </template>
 
 <script>
-import initDynamicDrawTool from "@/utils/drawTool.js";
+// import initDynamicDrawTool from "@/utils/drawTool.js";
 import initTerrainClipPlan from "@/utils/terrain_clip.js";
+import DrawTool from "@/utils/draw.js";
 
 export default {
   data() {
@@ -70,6 +74,10 @@ export default {
         bottomImg: require("@/assets/img/excavate_bottom_min.jpg"),
       });
       this.clipInctance.updateData(this.cartesians);
+    },
+    draw() {
+      this.drawTool = new DrawTool();
+      this.drawTool.startDraw();
     },
   },
 };

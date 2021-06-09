@@ -27,6 +27,7 @@
         position="top-right"
         :measurements="['polyline', 'area', 'vertical']"
         :offset="[130, 30]"
+        @measureEvt="measureEvt"
       />
 
       <terrain-clip />
@@ -66,11 +67,11 @@ export default {
       window.Cesium = Cesium;
       window.viewer = viewer;
 
-      // viewer.camera.setView({
-      //   destination: Cesium.Cartesian3.fromDegrees(117.220108, 31.834937, 3000),
-      // });
+      viewer.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees(114.21605, 22.58144, 3000),
+      });
 
-      // viewer.scene.globe.depthTestAgainstTerrain = true;
+      viewer.scene.globe.depthTestAgainstTerrain = true;
 
     },
     onTilesetReady(tileset, viewer) {
@@ -96,6 +97,9 @@ export default {
       viewer.zoomTo(tileset);
       viewer.scene.globe.depthTestAgainstTerrain = true;
     },
+    measureEvt(e){
+      console.log(e);
+    }
   },
 };
 </script>
