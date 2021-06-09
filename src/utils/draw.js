@@ -1,5 +1,22 @@
-function DrawTool(options) {
-    this.drawingMode = "polygon";
+function DrawTool() {
+    this.drawList = [];
+
+    this.startDraw = function (type, cb) {
+        let drawInstance = new DrawItem(type, cb);
+        drawInstance.startDraw();
+        this.drawList.push(drawInstance);
+    }
+
+    this.clear = function () {
+        this.drawList.forEach(el => { el.clear() });
+        this.drawList = [];
+    }
+}
+
+
+
+function DrawItem(type, cb) {
+    this.drawingMode = type;
     this.activeShapePoints = [];
     this.activeShape;
     this.floatingPoint = "";
@@ -11,6 +28,8 @@ function DrawTool(options) {
     viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
         Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
     );
+
+    viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     this.startDraw = function () {
         this.bindEvent();
@@ -33,7 +52,7 @@ function DrawTool(options) {
         this.handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
         this.handler.setInputAction(handleLeftClick.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         this.handler.setInputAction(handleMouseMove.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        this.handler.setInputAction(handleLeftDoubleClick.bind(this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+        this.handler.setInputAction(handleLeftDoubleClick.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
     }
 
 
@@ -66,8 +85,10 @@ function DrawTool(options) {
                 polygon: {
                     hierarchy: positionData,
                     material: new Cesium.ColorMaterialProperty(
-                        Cesium.Color.WHITE.withAlpha(0.7)
+                        Cesium.Color.YELLOW.withAlpha(0.7)
                     ),
+                    outlineColor: Cesium.Color.GREEN,
+                    outlineWidth: 10.0
                 },
             });
         }
@@ -107,10 +128,11 @@ function DrawTool(options) {
     }
 
     function handleLeftDoubleClick() {
+        this.activeShapePoints.pop();
+        this.activeShapePoints.pop();
+        cb(this.activeShapePoints);
         this.handler.destroy();
     }
-
-
 }
 
 

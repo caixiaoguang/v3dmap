@@ -1,7 +1,6 @@
 <template>
   <div class="terrain-clip-wrap">
     <el-button size="mini" @click="draw">click</el-button>
-    <el-button size="mini" @click="drawTool.cancelDraw()">cancel</el-button>
     <el-button size="mini" @click="drawTool.clear()">clear</el-button>
 
     <div class="clip-planel">
@@ -11,14 +10,13 @@
 </template>
 
 <script>
-// import initDynamicDrawTool from "@/utils/drawTool.js";
 import initTerrainClipPlan from "@/utils/terrain_clip.js";
 import DrawTool from "@/utils/draw.js";
 
 export default {
   data() {
     return {
-      height: "",
+      height: 100,
       cartesians: "",
     };
   },
@@ -26,41 +24,11 @@ export default {
     // console.log(initDynamicDrawTool());
   },
   methods: {
-    init() {
-      //   console.log(initDynamicDrawTool());
-      //   const DynamicDrawTool = initDynamicDrawTool();
-
-      drawPolygon();
-
-      let that = this;
-
-      function drawPolygon() {
-        var gonOption = {
-          width: 15,
-          geodesic: true,
-        };
-
-        const DynamicDrawTool = initDynamicDrawTool();
-
-        DynamicDrawTool.startDrawingPolyshape(
-          viewer,
-          true,
-          gonOption,
-          (cartesians) => {
-            console.log(cartesians);
-            //下面对处理代码
-            //....
-            that.cartesians = cartesians;
-            that.clip();
-          }
-        );
-      }
-    },
     clip() {
       if (!this.height || !this.cartesians) return;
 
       if (this.clipInctance) {
-        this.clipInctance.clear();
+        // this.clipInctance.clear();
       }
 
       if (!Cesium.TerrainClipPlan) {
@@ -76,8 +44,15 @@ export default {
       this.clipInctance.updateData(this.cartesians);
     },
     draw() {
-      this.drawTool = new DrawTool();
-      this.drawTool.startDraw();
+      if (!this.drawTool) {
+        this.drawTool = new DrawTool();
+      }
+      this.drawTool.startDraw("polygon", this.drawComleted);
+    },
+    drawComleted(e) {
+      this.cartesians = e;
+      this.drawTool.clear();
+      this.clip();
     },
   },
 };
