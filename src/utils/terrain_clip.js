@@ -32,33 +32,40 @@ function initTerrainClipPlan() {
         }
         return n(e, [{
             key: "updateData",
-            value: function (e) {
+            value: function (positions) {
                 this.clear();
-                var t = [],
-                    i = e.length,
-                    a = new Cesium.Cartesian3,
-                    n = Cesium.Cartesian3.subtract(e[0], e[1], a);
+                var planes = [],
+                    length = positions.length,
+                    cartesian3 = new Cesium.Cartesian3,
+                    n = Cesium.Cartesian3.subtract(positions[0], positions[1], cartesian3);
                 n = n.x > 0, this.excavateMinHeight = 9999;
-                for (var r = 0; r < i; ++r) {
-                    var s = (r + 1) % i,
-                        l = Cesium.Cartesian3.midpoint(e[r], e[s], new Cesium.Cartesian3),
-                        u = Cesium.Cartographic.fromCartesian(e[r]),
+                for (var r = 0; r < length; ++r) {
+                    var s = (r + 1) % length,
+                        l = Cesium.Cartesian3.midpoint(positions[r], positions[s], new Cesium.Cartesian3),
+                        u = Cesium.Cartographic.fromCartesian(positions[r]),
                         c = viewer.scene.globe.getHeight(u) || u.height;
                     c < this.excavateMinHeight && (this.excavateMinHeight = c);
                     var d, h = Cesium.Cartesian3.normalize(l, new Cesium.Cartesian3);
-                    d = n ? Cesium.Cartesian3.subtract(e[r], l, new Cesium.Cartesian3) : Cesium.Cartesian3.subtract(e[s], l, new Cesium.Cartesian3), d = Cesium.Cartesian3.normalize(d, d);
+                    d = n ? Cesium.Cartesian3.subtract(positions[r], l, new Cesium.Cartesian3) : Cesium.Cartesian3.subtract(positions[s], l, new Cesium.Cartesian3), d = Cesium.Cartesian3.normalize(d, d);
                     var f = Cesium.Cartesian3.cross(d, h, new Cesium.Cartesian3);
                     f = Cesium.Cartesian3.normalize(f, f);
                     var p = new Cesium.Plane(f, 0),
                         m = Cesium.Plane.getPointDistance(p, l);
-                    t.push(new Cesium.ClippingPlane(f, m))
+                    planes.push(new Cesium.ClippingPlane(f, m))
                 }
                 this.viewer.scene.globe.clippingPlanes = new Cesium.ClippingPlaneCollection({
-                    planes: t,
+                    // modelMatrix:Cesium.Transforms.eastNorthUpToFixedFrame({
+                    //     "x": -2420322.481118007,
+                    //     "y": 5371849.444438176,
+                    //     "z": 2434330.63681022
+                    // }),
+                    planes: planes,
                     edgeWidth: 1,
                     edgeColor: Cesium.Color.WHITE,
                     enabled: !0
-                }), this._prepareWell(e), this._createWell(this.wellData)
+                });
+                this._prepareWell(positions);
+                this._createWell(this.wellData)
             }
         }, {
             key: "clear",
@@ -240,7 +247,8 @@ function initTerrainClipPlan() {
         }, {
             key: "_updateExcavateDepth",
             value: function (e) {
-                this.bottomSurface && this.viewer.scene.primitives.remove(this.bottomSurface), this.wellWall && this.viewer.scene.primitives.remove(this.wellWall);
+                this.bottomSurface && this.viewer.scene.primitives.remove(this.bottomSurface);
+                 this.wellWall && this.viewer.scene.primitives.remove(this.wellWall);
                 for (var t = this.wellData.lerp_pos, i = [], a = t.length, n = 0; n < a; n++) i.push(Cesium.Cartesian3.fromRadians(t[n].longitude, t[n].latitude, this.excavateMinHeight - e));
                 this.wellData.bottom_pos = i, this._createWell(this.wellData), this.viewer.scene.primitives.add(this.bottomSurface), this.viewer.scene.primitives.add(this.wellWall)
             }

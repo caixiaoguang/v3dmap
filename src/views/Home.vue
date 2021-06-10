@@ -68,7 +68,7 @@ export default {
       window.viewer = viewer;
 
       viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(114.21605, 22.58144, 3000),
+        destination: Cesium.Cartesian3.fromDegrees(114.25682, 22.58522, 5000),
       });
 
       viewer.scene.globe.depthTestAgainstTerrain = true;

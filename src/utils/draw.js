@@ -130,7 +130,7 @@ function DrawItem(type, cb) {
     function handleLeftDoubleClick() {
         this.activeShapePoints.pop();
         this.activeShapePoints.pop();
-        cb(this.activeShapePoints);
+        cb(this.activeShapePoints, this.activeShape);
         this.handler.destroy();
     }
 }
