@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <head-title />
+    <layer />
+
     <vc-viewer
       :showCredit="false"
       :shouldAnimate="true"
@@ -14,7 +17,7 @@
         />
       </vc-layer-imagery>
 
-      <vc-provider-terrain-tianditu :token="token" />
+      <!-- <vc-provider-terrain-tianditu :token="token" /> -->
 
       <vc-navigation
         :printOpts="false"
@@ -30,27 +33,27 @@
         @measureEvt="measureEvt"
       />
 
-      <terrain-clip />
-
-      <!-- <layer /> -->
+      <!-- <terrain-clip /> -->
 
       <!-- <vc-drawings></vc-drawings> -->
 
-      <!-- <vc-primitive-tileset
-        url="http://159.75.121.194/3dtile/tileset.json"
+      <vc-primitive-tileset
+        url="http://159.75.121.194/xingyi/tileset.json"
         @readyPromise="onTilesetReady"
-      ></vc-primitive-tileset> -->
+      ></vc-primitive-tileset>
     </vc-viewer>
   </div>
 </template>
 
 <script>
+import HeadTitle from "@/components/Head";
 import Layer from "@/components/Layer";
 import TerrainClip from "@/components/TerrainClip";
 
 export default {
   name: "Home",
   components: {
+    HeadTitle,
     Layer,
     TerrainClip,
   },
@@ -72,34 +75,34 @@ export default {
       });
 
       viewer.scene.globe.depthTestAgainstTerrain = true;
-
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(
         tileset.boundingSphere.center
       );
+
       const surface = Cesium.Cartesian3.fromRadians(
         cartographic.longitude,
         cartographic.latitude,
-        cartographic.height
+        // cartographic.height
+        0
       );
       const offset = Cesium.Cartesian3.fromRadians(
         cartographic.longitude,
         cartographic.latitude,
-        5
+        -1135
       );
       const translation = Cesium.Cartesian3.subtract(
         offset,
         surface,
         new Cesium.Cartesian3()
       );
-      // tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
       viewer.zoomTo(tileset);
-      viewer.scene.globe.depthTestAgainstTerrain = true;
     },
-    measureEvt(e){
+    measureEvt(e) {
       console.log(e);
-    }
+    },
   },
 };
 </script>

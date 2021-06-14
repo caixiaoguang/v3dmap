@@ -1,13 +1,13 @@
 function DrawTool() {
     this.drawList = [];
 
-    this.startDraw = function (type, cb) {
+    this.startDraw = function(type, cb) {
         let drawInstance = new DrawItem(type, cb);
         drawInstance.startDraw();
         this.drawList.push(drawInstance);
     }
 
-    this.clear = function () {
+    this.clear = function() {
         this.drawList.forEach(el => { el.clear() });
         this.drawList = [];
     }
@@ -31,15 +31,15 @@ function DrawItem(type, cb) {
 
     viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-    this.startDraw = function () {
+    this.startDraw = function() {
         this.bindEvent();
     }
 
-    this.cancelDraw = function () {
+    this.cancelDraw = function() {
         this.handler.destroy()
     }
 
-    this.clear = function () {
+    this.clear = function() {
         this.activeShapePoints = [];
         viewer.entities.remove(this.activeShape);
         viewer.dataSources.remove(this.collection);
@@ -56,7 +56,7 @@ function DrawItem(type, cb) {
     }
 
 
-    this.createPoint = function (worldPosition) {
+    this.createPoint = function(worldPosition) {
         const point = new Cesium.Entity({
             position: worldPosition,
             point: {

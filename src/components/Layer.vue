@@ -95,15 +95,14 @@ $bgColor: #3f4854;
   z-index: 100;
   width: 200px;
   height: 100vh;
-  padding: 12px 8px;
-  padding-left: 15px;
+  padding: 12px 15px;
   background-color: $bgColor;
-  border: 2px solid #275d9283;
+  border: 2px solid #275d926e;
 
   .layer-name {
     font-size: 15px;
     background-color: #fff;
-    background-color: #409eff;
+    background-color: #34c9ee83;
     color: #fff;
     border-radius: 5px;
     padding: 6px;
