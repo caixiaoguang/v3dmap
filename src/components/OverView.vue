@@ -5,7 +5,7 @@ import { loadRemoteFile } from "@/utils/utils.js";
 require("../utils/dom2img");
 
 const baseUrl = process.env.BASE_URL;
-const overviewDataUrl = `${baseUrl}/static/旅游数据/4A5A景区.xlsx`;
+const overviewDataUrl = `${baseUrl}static/旅游数据/4A5A景区.xlsx`;
 
 export default {
   data() {
@@ -17,11 +17,12 @@ export default {
   methods: {
     async getOverView() {
       const data = await loadRemoteFile(overviewDataUrl);
-      const overviewData = data[0];
-      this.addEntityPoint(overviewData);
+      this.overviewData = data[0];
+      this.addEntityPoint(this.overviewData);
       this.bindClickEvent();
     },
     addEntityPoint(data) {
+      viewer.scene.postProcessStages.fxaa.enabled = false;
       //   const collection = new Cesium.EntityCollection();
       const collection = new Cesium.CustomDataSource();
       const distanceDisplayCondition = new Cesium.DistanceDisplayCondition(
@@ -39,14 +40,16 @@ export default {
             index: i,
           },
           point: {
-            color: Cesium.Color.PINK,
+            color: Cesium.Color.fromCssColorString("#23bcf0"),
             pixelSize: 10,
             distanceDisplayCondition: distanceDisplayCondition,
             scaleByDistance: new Cesium.NearFarScalar(10000, 1.5, 500000, 0.1),
           },
           label: {
             text: item["旅游景区名称"],
-            font: "15px sans-serif",
+            scale: 0.5, //这里非常巧妙的先将字体大小放大一倍在缩小一倍
+            font: "bold 30px MicroSoft YaHei",
+            pixelOffset: new Cesium.Cartesian2(0, -20),
             distanceDisplayCondition: distanceDisplayCondition,
           },
         });
@@ -69,16 +72,34 @@ export default {
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     },
     addDivPopup(entity) {
-      console.log(entity);
+      if (!this.graphicLayer) {
+        this.graphicLayer = new mars3d.layer.GraphicLayer();
+        $map.addLayer(this.graphicLayer);
+      }
 
-      this.graphicLayer = new mars3d.layer.GraphicLayer();
-      $map.addLayer(this.graphicLayer);
+      let imgHtml = "";
+      const entityIndex = entity.properties.getValue().index;
+      const imgPathList = this.overviewData[entityIndex]["图片"].split(",");
+      console.log(imgPathList);
+
+      if (imgPathList.length === 1) {
+        imgHtml = `<img style="height:100px;width:100%;object-fit:contain;" src="${baseUrl}static/旅游数据/A级景区图片/${imgPathList[0]}">`;
+      }
+      if (imgPathList.length > 1) {
+        imgHtml = `<img style="height:100px;width:100%;object-fit:contain;" src="${baseUrl}static/旅游数据/A级景区图片/${imgPathList[0]}">`;
+        imgHtml += `<img style="height:100px;width:100%;object-fit:contain;" src="${baseUrl}static/旅游数据/A级景区图片/${imgPathList[1].trim()}">`;
+      }
+
+      console.log(imgHtml);
+
       const graphic = new mars3d.graphic.DivBillboardEntity({
         position: entity.position,
         style: {
           html: `<div class="divpoint2">
                             <div class="title">${entity.id}</div>
-                            <div class="content">此处可以绑定任意Html代码和css效果</div>
+                            <div class="content">
+                             ${imgHtml}
+                            </div>
                         </div >`,
           horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
@@ -462,11 +483,11 @@ export default {
 
 .divpoint2 {
   position: relative;
-  width: 200px;
-  height: 157px;
+  width: 400px;
+  height: 314px;
   background: rgba(42, 42, 42, 0.8);
   border-radius: 4px;
-  background: url("../assets/img/div22.svg");
+  background: url("../assets/img/div2.svg");
   background-size: 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -486,8 +507,8 @@ export default {
 
 .divpoint2 .title {
   position: inherit;
-  top: 22px;
-  left: 70px;
+  top: 55px;
+  left: 140px;
   font-size: 14px;
   text-align: left;
 
@@ -498,12 +519,14 @@ export default {
 .divpoint2 .content {
   position: inherit;
   font-size: 14px;
-  top: 30px;
-  left: 50px;
-  width: 140px;
+  top: 75px;
+  left: 80px;
+  width: 280px;
   height: auto;
   text-align: left;
   color: rgba(255, 255, 255, 1);
+  display: flex;
+  overflow: hidden;
 }
 
 /**一个简单文本DIV面板**/
