@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <head-title />
-    <layer />
+    <!-- <head-title /> -->
+    <!-- <layer /> -->
+    <over-view v-if="ready"></over-view>
 
     <vc-viewer
       :showCredit="false"
@@ -25,22 +26,22 @@
         :otherOpts="{ position: 'bottom' }"
       />
 
-      <vc-measurements
+      <!-- <vc-measurements
         ref="measurementsRef"
         position="top-right"
         :measurements="['polyline', 'area', 'vertical']"
         :offset="[130, 30]"
         @measureEvt="measureEvt"
-      />
+      /> -->
 
       <!-- <terrain-clip /> -->
 
       <!-- <vc-drawings></vc-drawings> -->
 
-      <vc-primitive-tileset
+      <!-- <vc-primitive-tileset
         url="http://159.75.121.194/xingyi/tileset.json"
         @readyPromise="onTilesetReady"
-      ></vc-primitive-tileset>
+      ></vc-primitive-tileset> -->
     </vc-viewer>
   </div>
 </template>
@@ -49,6 +50,7 @@
 import HeadTitle from "@/components/Head";
 import Layer from "@/components/Layer";
 import TerrainClip from "@/components/TerrainClip";
+import OverView from "@/components/OverView";
 
 export default {
   name: "Home",
@@ -56,25 +58,29 @@ export default {
     HeadTitle,
     Layer,
     TerrainClip,
+    OverView,
   },
   data() {
     return {
       // token: "3cb95943baef24c1642b58bbebce332c",
       token: "0de59a2dff2555e94a670e2511996e6e",
       measureOptions: { color: "#3f4854" },
+      ready: false,
     };
   },
   methods: {
     viewerReady(e) {
-      const { Cesium, viewer, vm } = e;
+      const { Cesium, viewer, map } = e;
       window.Cesium = Cesium;
       window.viewer = viewer;
-
+      window.$map = map;
+      this.ready = true;
+      
       viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(114.25682, 22.58522, 5000),
+        destination: Cesium.Cartesian3.fromDegrees(106.69, 26.336, 5000),
       });
 
-      viewer.scene.globe.depthTestAgainstTerrain = true;
+      // viewer.scene.globe.depthTestAgainstTerrain = true;
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(

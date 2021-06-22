@@ -16,7 +16,7 @@ const base_url = process.env.BASE_URL
 const app = createApp(App).use(router);
 app.use(VueCesium,
     {
-        // cesiumPath: "http://159.75.121.194"
+        cesiumPath: "http://159.75.121.194",
     });
 app.use(ElementPlus);
 app.mount('#app');
