@@ -3,6 +3,7 @@
     <!-- <head-title /> -->
     <!-- <layer /> -->
     <over-view v-if="ready"></over-view>
+    <!-- <cylinder-you-shi v-if="ready"></cylinder-you-shi> -->
 
     <vc-viewer
       :showCredit="false"
@@ -50,7 +51,8 @@
 import HeadTitle from "@/components/Head";
 import Layer from "@/components/Layer";
 import TerrainClip from "@/components/TerrainClip";
-import OverView from "@/components/OverView";
+import OverView from "@/components/overview/OverView";
+import CylinderYouShi from "@/components/CylinderYouShi";
 
 export default {
   name: "Home",
@@ -59,6 +61,7 @@ export default {
     Layer,
     TerrainClip,
     OverView,
+    CylinderYouShi,
   },
   data() {
     return {
@@ -75,12 +78,12 @@ export default {
       window.viewer = viewer;
       window.$map = map;
       this.ready = true;
-      
+
       viewer.camera.setView({
         destination: Cesium.Cartesian3.fromDegrees(106.69, 26.336, 5000),
       });
 
-      // viewer.scene.globe.depthTestAgainstTerrain = true;
+      viewer.scene.globe.depthTestAgainstTerrain = true;
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(
