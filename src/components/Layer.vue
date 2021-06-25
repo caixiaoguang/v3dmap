@@ -2,6 +2,9 @@
   <!-- <div class="drawer-button" @click="showDrawer = true" v-show="!showDrawer">
     <i class="el-icon-s-unfold"></i>
   </div> -->
+  <over-view v-if="ready" :active="overview"></over-view>
+  <cylinder-you-shi v-if="ready" :active="youShi"></cylinder-you-shi>
+  <province v-if="ready" />
 
   <div class="layer-panel">
     <div class="layer-item">
@@ -14,17 +17,42 @@
         <el-checkbox v-model="snow" @change="handleSnow">雪</el-checkbox>
       </div>
     </div>
+
+    <div class="layer-item">
+      <div class="layer-name">
+        <i class="el-icon-sunny"></i>
+        <span>旅游资源</span>
+      </div>
+      <div class="layer-switch">
+        <el-checkbox v-model="overview">概况</el-checkbox>
+        <el-checkbox v-model="youShi">优势度</el-checkbox>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { createSnowStage, createRainStage } from "@/utils/weather_glsl.js";
+import OverView from "@/components/overview/OverView";
+import CylinderYouShi from "@/components/CylinderYouShi";
+import Province from "@/components/Province";
+
 export default {
+  props: {
+    ready: false,
+  },
+  components: {
+    OverView,
+    CylinderYouShi,
+    Province,
+  },
   data() {
     return {
       rain: false,
       snow: false,
       showDrawer: false,
+      overview: false,
+      youShi: false,
     };
   },
   mounted() {},
@@ -99,21 +127,24 @@ $bgColor: #3f4854;
   background-color: $bgColor;
   border: 2px solid #275d926e;
 
-  .layer-name {
-    font-size: 15px;
-    background-color: #fff;
-    background-color: #34c9ee83;
-    color: #fff;
-    border-radius: 5px;
-    padding: 6px;
-    i {
-      margin-right: 5px;
-      font-weight: 1000;
+  .layer-item {
+    margin-bottom: 10px;
+    .layer-name {
+      font-size: 15px;
+      background-color: #fff;
+      background-color: #34c9ee83;
+      color: #fff;
+      border-radius: 5px;
+      padding: 6px;
+      i {
+        margin-right: 5px;
+        font-weight: 1000;
+      }
     }
-  }
 
-  .layer-switch {
-    padding: 5px;
+    .layer-switch {
+      padding: 5px;
+    }
   }
 }
 </style>

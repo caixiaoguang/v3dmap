@@ -9,11 +9,24 @@ const baseUrl = process.env.BASE_URL;
 const overviewDataUrl = `${baseUrl}static/旅游数据/4A5A景区.xlsx`;
 
 export default {
+  props: {
+    active: false,
+  },
   data() {
     return {};
   },
   created() {
     this.getOverView();
+  },
+  watch: {
+    active(newVal) {
+      this.collection && (this.collection.show = newVal);
+      if (!newVal) {
+        if (this.graphicLayer) {
+          $map.removeLayer(this.graphicLayer);
+        }
+      }
+    },
   },
   methods: {
     async getOverView() {
@@ -45,17 +58,21 @@ export default {
             distanceDisplayCondition: distanceDisplayCondition,
             scaleByDistance: new Cesium.NearFarScalar(10000, 1.5, 500000, 0.1),
           },
-          label: {
-            text: item["旅游景区名称"],
-            scale: 0.5,
-            font: "bold 30px MicroSoft YaHei",
-            pixelOffset: new Cesium.Cartesian2(0, -20),
-            distanceDisplayCondition: distanceDisplayCondition,
-          },
+          label:
+            item["A级"] === "5A"
+              ? {
+                  text: item["旅游景区名称"],
+                  scale: 0.5,
+                  font: "bold 30px MicroSoft YaHei",
+                  pixelOffset: new Cesium.Cartesian2(0, -20),
+                  // distanceDisplayCondition: distanceDisplayCondition,
+                }
+              : null,
         });
         this.collection.entities.add(entity);
       }
       viewer.dataSources.add(this.collection);
+      this.collection.show = this.active;
     },
 
     bindClickEvent() {
@@ -114,6 +131,10 @@ export default {
   beforeUnmount() {
     if (this.graphicLayer) {
       $map.removeLayer(this.graphicLayer);
+    }
+
+    if (this.collection) {
+      viewer.dataSources.remove(this.collection);
     }
 
     this.handler.destroy();

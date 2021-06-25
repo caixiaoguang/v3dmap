@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <!-- <head-title /> -->
-    <!-- <layer /> -->
-    <over-view v-if="ready"></over-view>
+    <layer :ready="ready" />
+    <!-- <over-view v-if="ready"></over-view> -->
     <!-- <cylinder-you-shi v-if="ready"></cylinder-you-shi> -->
 
     <vc-viewer
@@ -83,7 +83,7 @@ export default {
         destination: Cesium.Cartesian3.fromDegrees(106.69, 26.336, 5000),
       });
 
-      viewer.scene.globe.depthTestAgainstTerrain = true;
+      // viewer.scene.globe.depthTestAgainstTerrain = true;
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(

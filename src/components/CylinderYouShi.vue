@@ -8,26 +8,19 @@ const baseUrl = process.env.BASE_URL;
 const youshiUrl = `${baseUrl}static/旅游数据/贵州旅游优势度.xlsx`;
 
 export default {
+  props: {
+    active: false,
+  },
   created() {
-    this.addGeojsonLayer();
     this.loadYouSHiData();
   },
-  methods: {
-    addGeojsonLayer() {
-      this.gzs = new mars3d.layer.GeoJsonLayer({
-        name: "gzs",
-        url: `${baseUrl}static/gzs.json`,
-        symbol: {
-          styleOptions: {
-            opacity: 0.7,
-            outline: true,
-            outlineColor: "#ccc",
-          },
-        },
-        // popup: "{NAME}",
-      });
-      $map.addLayer(this.gzs);
+  watch: {
+    active(newVal) {
+      this.graphicLayer && (this.graphicLayer.show = newVal);
     },
+  },
+  methods: {
+  
 
     async loadYouSHiData() {
       const excelData = await loadRemoteFile(youshiUrl);
@@ -61,8 +54,9 @@ export default {
         },
       });
       this.graphicLayer.addGraphic(graphic);
-
       graphic.bindTooltip(html);
+
+      this.graphicLayer.show = this.active;
 
       return graphic;
     },
