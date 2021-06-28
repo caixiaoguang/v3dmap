@@ -25,7 +25,7 @@ export function loadRemoteFile(url) {
                 }
                 catch (err) {
                     console.log(err);
-
+                    reject(err)
                 }
 
             } else {
@@ -34,4 +34,11 @@ export function loadRemoteFile(url) {
         };
         xhr.send();
     })
+}
+
+export function degree2decimal(degreeString) {
+    let degreeMain = degreeString.split('°')[0];
+    let degreeMinute = degreeString.split('°')[1].split('ˊ')[0];
+    let degreeSecond = degreeString.split('ˊ')[1].split('″')[0];
+    return (Number(degreeSecond) / 60 + Number(degreeMinute)) / 60 + Number(degreeMain)
 }

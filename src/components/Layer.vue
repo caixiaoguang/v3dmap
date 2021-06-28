@@ -4,6 +4,7 @@
   </div> -->
   <over-view v-if="ready" :active="overview"></over-view>
   <cylinder-you-shi v-if="ready" :active="youShi"></cylinder-you-shi>
+  <focus-province v-if="ready" :active="focusProvince"></focus-province>
   <province v-if="ready" />
 
   <div class="layer-panel">
@@ -26,6 +27,7 @@
       <div class="layer-switch">
         <el-checkbox v-model="overview">概况</el-checkbox>
         <el-checkbox v-model="youShi">优势度</el-checkbox>
+        <el-checkbox v-model="focusProvince">重点县</el-checkbox>
       </div>
     </div>
   </div>
@@ -36,6 +38,7 @@ import { createSnowStage, createRainStage } from "@/utils/weather_glsl.js";
 import OverView from "@/components/overview/OverView";
 import CylinderYouShi from "@/components/CylinderYouShi";
 import Province from "@/components/Province";
+import FocusProvince from "@/components/FocusProvince";
 
 export default {
   props: {
@@ -45,6 +48,7 @@ export default {
     OverView,
     CylinderYouShi,
     Province,
+    FocusProvince,
   },
   data() {
     return {
@@ -53,6 +57,7 @@ export default {
       showDrawer: false,
       overview: false,
       youShi: false,
+      focusProvince: false,
     };
   },
   mounted() {},

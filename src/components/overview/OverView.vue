@@ -20,11 +20,14 @@ export default {
   },
   watch: {
     active(newVal) {
-      this.collection && (this.collection.show = newVal);
-      if (!newVal) {
-        if (this.graphicLayer) {
-          $map.removeLayer(this.graphicLayer);
-        }
+      if (this.collection) {
+        this.collection.show = newVal;
+      }
+
+      newVal ? this.bindClickEvent() : this.handler.destroy();
+
+      if (!newVal && this.graphicLayer) {
+        this.graphicLayer.clear();
       }
     },
   },
@@ -33,16 +36,11 @@ export default {
       const data = await loadRemoteFile(overviewDataUrl);
       this.overviewData = data[0];
       this.addEntityPoint(this.overviewData);
-      this.bindClickEvent();
     },
 
     addEntityPoint(data) {
       viewer.scene.postProcessStages.fxaa.enabled = false;
       this.collection = new Cesium.CustomDataSource();
-      const distanceDisplayCondition = new Cesium.DistanceDisplayCondition(
-        0.0,
-        500000
-      );
 
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
@@ -52,11 +50,27 @@ export default {
           properties: {
             index: i,
           },
-          point: {
-            color: Cesium.Color.fromCssColorString("#23bcf0"),
-            pixelSize: 10,
-            distanceDisplayCondition: distanceDisplayCondition,
-            scaleByDistance: new Cesium.NearFarScalar(10000, 1.5, 500000, 0.1),
+          point:
+            item["A级"] === "4A"
+              ? {
+                  color: Cesium.Color.fromCssColorString("#23bcf0"),
+                  pixelSize: 10,
+                  distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+                    500000.0
+                  ),
+                }
+              : null,
+          billboard: {
+            image:
+              item["A级"] === "4A"
+                ? require("../../assets/img/4a.png")
+                : require("../../assets/img/5a.png"),
+            distanceDisplayCondition:
+              item["A级"] === "4A"
+                ? new Cesium.DistanceDisplayCondition(0, 500000.0)
+                : null,
+            height: 32,
+            width: 32,
           },
           label:
             item["A级"] === "5A"
@@ -64,8 +78,7 @@ export default {
                   text: item["旅游景区名称"],
                   scale: 0.5,
                   font: "bold 30px MicroSoft YaHei",
-                  pixelOffset: new Cesium.Cartesian2(0, -20),
-                  // distanceDisplayCondition: distanceDisplayCondition,
+                  pixelOffset: new Cesium.Cartesian2(0, -30),
                 }
               : null,
         });
