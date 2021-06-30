@@ -1,4 +1,19 @@
-<template></template>
+<template>
+  <div
+    class="mars3d-popup-content-wrapper mars3d-popup-background analysis-panel"
+  >
+    <div class="mars3d-popup-content mars3d-popup-color">
+      <tbody>
+        <thead>
+          <tr>
+            <th colspan="2">统计情况</th>
+          </tr>
+        </thead>
+        <tr></tr>
+      </tbody>
+    </div>
+  </div>
+</template>
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";

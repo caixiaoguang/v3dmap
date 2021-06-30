@@ -10,3 +10,10 @@ body,
         background-color: #3f4854 !important;
     }
 }
+
+.analysis-panel {
+    position: absolute;
+    top: 200px;
+    right: 200px;
+    z-index: 100;
+}
