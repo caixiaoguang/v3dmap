@@ -1,22 +1,14 @@
 <template>
-  <div
-    class="mars3d-popup-content-wrapper mars3d-popup-background analysis-panel"
-  >
-    <div class="mars3d-popup-content mars3d-popup-color">
-      <tbody>
-        <thead>
-          <tr>
-            <th colspan="2">统计情况</th>
-          </tr>
-        </thead>
-        <tr></tr>
-      </tbody>
-    </div>
-  </div>
+  <analysis-panel
+    :data="anaData"
+    :columns="columns"
+    v-show="active"
+  ></analysis-panel>
 </template>
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";
+import AnalysisPanel from "@/components/AnalysisPanel";
 import "./overview.css";
 // require("@/utils/dom2img");
 
@@ -27,8 +19,14 @@ export default {
   props: {
     active: false,
   },
+  components: {
+    AnalysisPanel,
+  },
   data() {
-    return {};
+    return {
+      anaData: [],
+      columns: ["旅游资源类型", "个数"],
+    };
   },
   created() {
     this.getOverView();
@@ -50,6 +48,7 @@ export default {
     async getOverView() {
       const data = await loadRemoteFile(overviewDataUrl);
       this.overviewData = data[0];
+      this.anaData = data[2];
       this.addEntityPoint(this.overviewData);
     },
 

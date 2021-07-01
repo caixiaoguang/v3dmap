@@ -1,7 +1,15 @@
-<template></template>
+<template>
+  <analysis-panel
+    :data="anaData"
+    :columns="columns"
+    v-show="active"
+  ></analysis-panel>
+</template>
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";
+import AnalysisPanel from "@/components/AnalysisPanel";
+
 import center from "@/utils/center.json";
 
 const baseUrl = process.env.BASE_URL;
@@ -10,6 +18,15 @@ const youshiUrl = `${baseUrl}static/旅游数据/贵州旅游优势度.xlsx`;
 export default {
   props: {
     active: false,
+  },
+  components: {
+    AnalysisPanel,
+  },
+  data() {
+    return {
+      anaData: [],
+      columns: ["优势度等级", "个数"],
+    };
   },
   created() {
     this.loadYouSHiData();
@@ -20,11 +37,10 @@ export default {
     },
   },
   methods: {
-  
-
     async loadYouSHiData() {
       const excelData = await loadRemoteFile(youshiUrl);
       const data = excelData[0];
+      this.anaData = excelData[1];
       if (!this.graphicLayer) {
         this.graphicLayer = new mars3d.layer.GraphicLayer();
         $map.addLayer(this.graphicLayer);
