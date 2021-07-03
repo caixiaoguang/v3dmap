@@ -1,5 +1,6 @@
 <template>
-  <div class="analysis" v-show="active">
+  <div class="analysis-panel" v-show="active">
+    <div class="title">统计情况</div>
     <el-tabs v-model="currentProvince" @tab-click="tabClick">
       <el-tab-pane
         v-for="tab in tabList"
@@ -7,20 +8,30 @@
         :name="tab.name"
         :label="tab.label"
       >
-        <table>
-          <thead>
-            <tr>
-              <th v-for="(item, index) in columns" :key="index">{{ item }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(dataItem, index) in tab.data" :key="index">
-              <td v-for="(key, index) in columns" :key="index">
-                {{ formatNumber(dataItem[key]) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="content">
+          <div class="cell" v-for="item in tab.data" :key="item">
+            <div class="name">
+              <i class="el-icon-pie-chart"></i>
+              {{ item["评价等"] }}
+            </div>
+            <div class="count">
+              未开发：<span>{{ item["未开发"] }}</span> 个
+            </div>
+            <div class="count">
+              已开发：<span class="green">{{ item["已开发"] }}</span> 个
+            </div>
+            <div class="count">
+              等级开发比例：<span class="normal">{{
+                formatNumber(item["等级开发比例"])
+              }}</span>
+            </div>
+            <div class="count">
+              开发资源占比：<span class="normal">{{
+                formatNumber(item["开发资源占比"])
+              }}</span>
+            </div>
+          </div>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -202,18 +213,25 @@ export default {
 </script>
 
 <style lang="scss">
-.analysis {
+.analysis-panel {
   .el-tabs__item {
-    color: #fff;
+    color: #1799b99c;
   }
-  position: absolute;
-  bottom: 20px;
-  right: 10px;
-  z-index: 100;
-  background: rgba(63, 72, 84, 0.6);
-  color: #fff;
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 3px;
+}
+</style>
+
+<style lang="scss" scoped>
+.analysis-panel {
+  padding-left: 20px;
+  .content {
+    width: 320px;
+    .cell {
+      width: 50%;
+      .count {
+        padding: 4px;
+        font-size: 12px;
+      }
+    }
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <!-- <head-title /> -->
+    <head-title />
     <layer :ready="ready" />
     <!-- <over-view v-if="ready"></over-view> -->
     <!-- <cylinder-you-shi v-if="ready"></cylinder-you-shi> -->
@@ -27,13 +27,13 @@
         :otherOpts="{ position: 'bottom' }"
       />
 
-      <!-- <vc-measurements
+      <vc-measurements
         ref="measurementsRef"
         position="top-right"
         :measurements="['polyline', 'area', 'vertical']"
         :offset="[130, 30]"
         @measureEvt="measureEvt"
-      /> -->
+      />
 
       <!-- <terrain-clip /> -->
 

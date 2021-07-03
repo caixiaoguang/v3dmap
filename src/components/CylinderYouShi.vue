@@ -1,9 +1,18 @@
 <template>
-  <analysis-panel
-    :data="anaData"
-    :columns="columns"
-    v-show="active"
-  ></analysis-panel>
+  <div class="analysis-panel" v-show="active">
+    <div class="title">统计情况</div>
+    <div class="content">
+      <div class="cell" v-for="item in anaData" :key="item">
+        <div class="name">
+          <i class="el-icon-pie-chart"></i>
+          {{ item["优势度等级"] }}
+        </div>
+        <div class="count">
+          <span>{{ item["个数"] }}</span> 个
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -92,5 +101,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.cell {
+  padding-right: 20px;
+  &:last-child {
+    padding-right: 0;
+  }
+}
 </style>
