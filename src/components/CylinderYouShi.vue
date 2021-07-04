@@ -17,7 +17,6 @@
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";
-import AnalysisPanel from "@/components/AnalysisPanel";
 
 import center from "@/utils/center.json";
 
@@ -28,9 +27,7 @@ export default {
   props: {
     active: false,
   },
-  components: {
-    AnalysisPanel,
-  },
+  components: {},
   data() {
     return {
       anaData: [],
@@ -39,6 +36,7 @@ export default {
   },
   created() {
     this.loadYouSHiData();
+    // this.addBaseLayer();
   },
   watch: {
     active(newVal) {
@@ -63,10 +61,44 @@ export default {
         const position = Cesium.Cartesian3.fromDegrees(...lngLat, 10);
         const height = el["优势度"] * 10000;
         // const color = el[]
-        const html = `区县：${name}<br>优势度：${el["优势度"]}`;
+        const html = `区县：${name}<br>优势度：${el["优势度"].toFixed(3)}`;
 
         this.createZT(position, height, "", html);
       }
+    },
+
+    addBaseLayer() {
+      this.baseLayer = new mars3d.layer.GeoJsonLayer({
+        type: "geojson",
+        name: "淮海经济区11市",
+        url: "http://data.marsgis.cn/file/geojson/huaihai.json",
+        symbol: {
+          styleOptions: {
+            materialType: mars3d.MaterialType.PolyGradient,
+            color: "#3388cc",
+            opacity: 0.7,
+            alphaPower: 1.3,
+            length: "{gdp}",
+          },
+          styleField: "Name",
+          styleFieldOptions: {
+            济宁市: { color: "#D4AACE" },
+            临沂市: { color: "#8DC763" },
+            菏泽市: { color: "#F7F39A" },
+            枣庄市: { color: "#F7F39A" },
+            徐州市: { color: "#96F0F1" },
+            宿迁市: { color: "#EAC9A8" },
+            连云港市: { color: "#F7F39A" },
+            商丘市: { color: "#D4AACE" },
+            宿州市: { color: "#8DC763" },
+            亳州市: { color: "#96F0F1" },
+            淮北市: { color: "#EAC9A8" },
+          },
+        },
+        popup: "{Name}",
+        show: true,
+      });
+      $map.addLayer(this.baseLayer);
     },
 
     createZT(position, len, color, html) {
@@ -74,8 +106,10 @@ export default {
         position: position,
         style: {
           length: len,
-          topRadius: 6000.0,
-          bottomRadius: 6000.0,
+          topRadius: 3000.0,
+          bottomRadius: 3000.0,
+          materialType: "CircleScan",
+          color: "#34c9ee",
         },
       });
       this.graphicLayer.addGraphic(graphic);

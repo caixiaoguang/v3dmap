@@ -17,7 +17,6 @@
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";
-import AnalysisPanel from "@/components/AnalysisPanel";
 import "./overview.css";
 // require("@/utils/dom2img");
 
@@ -29,7 +28,6 @@ export default {
     active: false,
   },
   components: {
-    AnalysisPanel,
   },
   data() {
     return {

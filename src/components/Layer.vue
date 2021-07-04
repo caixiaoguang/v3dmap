@@ -5,7 +5,20 @@
   <over-view v-if="ready" :active="overview"></over-view>
   <cylinder-you-shi v-if="ready" :active="youShi"></cylinder-you-shi>
   <focus-province v-if="ready" :active="focusProvince"></focus-province>
-  <province v-if="ready" />
+  <poly-line layerName="gzs_polyline" v-if="ready" :active="district" />
+  <poly-line
+    layerName="高速"
+    :hasMaterial="true"
+    v-if="ready"
+    :active="fastRoad"
+  />
+  <poly-line
+    layerName="省道"
+    :hasMaterial="true"
+    :materialStyle="{ width: 10 }"
+    v-if="ready"
+    :active="provinceRoad"
+  />
 
   <div class="layer-panel">
     <div class="layer-item">
@@ -16,6 +29,18 @@
       <div class="layer-switch">
         <el-checkbox v-model="rain" @change="handleRain">雨</el-checkbox>
         <el-checkbox v-model="snow" @change="handleSnow">雪</el-checkbox>
+      </div>
+    </div>
+
+    <div class="layer-item">
+      <div class="layer-name">
+        <i class="el-icon-sunny"></i>
+        <span>矢量数据</span>
+      </div>
+      <div class="layer-switch">
+        <el-checkbox v-model="district">行政区划</el-checkbox>
+        <el-checkbox v-model="fastRoad">高速路</el-checkbox>
+        <el-checkbox v-model="provinceRoad">省道</el-checkbox>
       </div>
     </div>
 
@@ -37,7 +62,7 @@
 import { createSnowStage, createRainStage } from "@/utils/weather_glsl.js";
 import OverView from "@/components/overview/OverView";
 import CylinderYouShi from "@/components/CylinderYouShi";
-import Province from "@/components/Province";
+import PolyLine from "@/components/Polyline";
 import FocusProvince from "@/components/FocusProvince";
 
 export default {
@@ -47,8 +72,8 @@ export default {
   components: {
     OverView,
     CylinderYouShi,
-    Province,
     FocusProvince,
+    PolyLine,
   },
   data() {
     return {
@@ -58,6 +83,9 @@ export default {
       overview: false,
       youShi: false,
       focusProvince: false,
+      district: false,
+      fastRoad: false,
+      provinceRoad: false,
     };
   },
   mounted() {},
@@ -126,7 +154,7 @@ $bgColor: #3f4854;
   top: 0;
   left: 0;
   z-index: 100;
-  width: 200px;
+  width: 190px;
   height: 100vh;
   padding: 12px 15px;
   background-color: $bgColor;

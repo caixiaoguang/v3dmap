@@ -17,6 +17,9 @@
           :maximumLevel="18"
           :token="token"
         />
+        <!-- <vc-provider-imagery-arcgis
+          url="http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer"
+        /> -->
       </vc-layer-imagery>
 
       <!-- <vc-provider-terrain-tianditu :token="token" /> -->
@@ -77,13 +80,14 @@ export default {
       window.Cesium = Cesium;
       window.viewer = viewer;
       window.$map = map;
+      map.basemap = 2017;
       this.ready = true;
 
       viewer.camera.setView({
         destination: Cesium.Cartesian3.fromDegrees(106.69, 26.336, 5000),
       });
 
-      // viewer.scene.globe.depthTestAgainstTerrain = true;
+      viewer.scene.globe.depthTestAgainstTerrain = true;
     },
     onTilesetReady(tileset, viewer) {
       const cartographic = Cesium.Cartographic.fromCartesian(
