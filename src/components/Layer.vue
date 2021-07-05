@@ -2,6 +2,7 @@
   <!-- <div class="drawer-button" @click="showDrawer = true" v-show="!showDrawer">
     <i class="el-icon-s-unfold"></i>
   </div> -->
+
   <over-view v-if="ready" :active="overview"></over-view>
   <cylinder-you-shi v-if="ready" :active="youShi"></cylinder-you-shi>
   <focus-province v-if="ready" :active="focusProvince"></focus-province>
@@ -21,6 +22,19 @@
   />
 
   <div class="layer-panel">
+    <div class="layer-item">
+      <div class="layer-name">
+        <i class="el-icon-sunny"></i>
+        <span>基础底图</span>
+      </div>
+      <div class="layer-switch">
+        <el-radio-group v-model="baseMap" @change="changeBaseMap">
+          <el-radio label="satellite">影像图</el-radio>
+          <el-radio label="nightMap">暗色地图</el-radio>
+        </el-radio-group>
+      </div>
+    </div>
+
     <div class="layer-item">
       <div class="layer-name">
         <i class="el-icon-sunny"></i>
@@ -59,6 +73,7 @@
 </template>
 
 <script>
+import { ref, getCurrentInstance } from "vue";
 import { createSnowStage, createRainStage } from "@/utils/weather_glsl.js";
 import OverView from "@/components/overview/OverView";
 import CylinderYouShi from "@/components/CylinderYouShi";
@@ -83,14 +98,44 @@ export default {
       overview: false,
       youShi: false,
       focusProvince: false,
-      district: false,
+      district: true,
       fastRoad: false,
       provinceRoad: false,
+      baseMap: "satellite",
     };
+  },
+
+  watch: {
+    ready(newVal) {
+      if (newVal) {
+        this.satellite = new mars3d.layer.TdtLayer({
+          name: "satellite",
+          layer: "img_d",
+          key: ["164d40b29ad7c5c159c3b51a20c584d8"],
+        });
+        this.nightMap = new mars3d.layer.ArcGisLayer({
+          name: "nightmap",
+          url: "http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer",
+        });
+        $map.addLayer(this.satellite);
+        // $map.addLayer(this.nightMap, false);
+        // $map.basemap = this.satellite;
+        this.baseLayers= [this.satellite,this.nightMap]
+      }
+    },
   },
   mounted() {},
 
   methods: {
+    changeBaseMap(newVal) {
+      console.log($map);
+    },
+    tianDiTuReady(obj) {
+      const { vm } = obj;
+
+      console.log(vm);
+      this.tianDiTu = vm;
+    },
     handleSnow(value) {
       if (value) {
         this.addWeather("snow");

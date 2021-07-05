@@ -1,9 +1,7 @@
 <template>
   <div class="home">
     <head-title />
-    <layer :ready="ready" />
-    <!-- <over-view v-if="ready"></over-view> -->
-    <!-- <cylinder-you-shi v-if="ready"></cylinder-you-shi> -->
+    <div class="baselayer-control"></div>
 
     <vc-viewer
       :showCredit="false"
@@ -11,16 +9,7 @@
       :fullscreenButton="true"
       @ready="viewerReady"
     >
-      <vc-layer-imagery>
-        <vc-provider-imagery-tianditu
-          mapStyle="img_w"
-          :maximumLevel="18"
-          :token="token"
-        />
-        <!-- <vc-provider-imagery-arcgis
-          url="http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer"
-        /> -->
-      </vc-layer-imagery>
+      <layer :ready="ready" />
 
       <!-- <vc-provider-terrain-tianditu :token="token" /> -->
 
@@ -54,8 +43,6 @@
 import HeadTitle from "@/components/Head";
 import Layer from "@/components/Layer";
 import TerrainClip from "@/components/TerrainClip";
-import OverView from "@/components/overview/OverView";
-import CylinderYouShi from "@/components/CylinderYouShi";
 
 export default {
   name: "Home",
@@ -63,13 +50,10 @@ export default {
     HeadTitle,
     Layer,
     TerrainClip,
-    OverView,
-    CylinderYouShi,
   },
   data() {
     return {
-      // token: "3cb95943baef24c1642b58bbebce332c",
-      token: "0de59a2dff2555e94a670e2511996e6e",
+      token: "164d40b29ad7c5c159c3b51a20c584d8",
       measureOptions: { color: "#3f4854" },
       ready: false,
     };
@@ -80,8 +64,8 @@ export default {
       window.Cesium = Cesium;
       window.viewer = viewer;
       window.$map = map;
-      map.basemap = 2017;
       this.ready = true;
+      viewer.selectedEntity = undefined;
 
       viewer.camera.setView({
         destination: Cesium.Cartesian3.fromDegrees(106.69, 26.336, 5000),
