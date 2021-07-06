@@ -29,7 +29,9 @@
       </div>
       <div class="layer-switch">
         <el-radio-group v-model="baseMap" @change="changeBaseMap">
-          <el-radio label="satellite">影像图</el-radio>
+          <el-radio label="satellite" style="margin-bottom: 5px"
+            >影像图</el-radio
+          >
           <el-radio label="nightMap">暗色地图</el-radio>
         </el-radio-group>
       </div>
@@ -116,11 +118,10 @@ export default {
         this.nightMap = new mars3d.layer.ArcGisLayer({
           name: "nightmap",
           url: "http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer",
+          showClickFeature: false,
         });
+        this.activeBasemap = this.satellite;
         $map.addLayer(this.satellite);
-        // $map.addLayer(this.nightMap, false);
-        // $map.basemap = this.satellite;
-        this.baseLayers= [this.satellite,this.nightMap]
       }
     },
   },
@@ -128,7 +129,9 @@ export default {
 
   methods: {
     changeBaseMap(newVal) {
-      console.log($map);
+      $map.addLayer(this[newVal]);
+      $map.removeLayer(this.activeBasemap);
+      this.activeBasemap = this[newVal];
     },
     tianDiTuReady(obj) {
       const { vm } = obj;

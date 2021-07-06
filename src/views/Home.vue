@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <head-title />
+    <!-- <head-title /> -->
     <div class="baselayer-control"></div>
 
     <vc-viewer

@@ -18,12 +18,14 @@ body,
     z-index: 30000;
     color: #34c9ee;
     padding: 15px;
-    background: no-repeat url('../assets//img/panel.png');
+    background: no-repeat url("../assets//img/panel.png");
     background-color: #0b252cc7;
     background-size: 100% 100%;
     box-sizing: border-box;
     font-size: 14px;
     border-radius: 5px;
+    max-height: calc(100vh - 150px);
+    overflow-y: hidden;
     .title {
         font-size: 16px;
         font-weight: bold;
@@ -32,6 +34,8 @@ body,
     .content {
         display: flex;
         flex-wrap: wrap;
+        max-height: calc(100vh - 230px);
+        overflow-y: auto;
         .cell {
             padding-top: 10px;
             .name {
