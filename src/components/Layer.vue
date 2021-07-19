@@ -7,19 +7,14 @@
   <cylinder-you-shi v-if="ready" :active="youShi"></cylinder-you-shi>
   <focus-province v-if="ready" :active="focusProvince"></focus-province>
   <poly-line layerName="gzs_polyline" v-if="ready" :active="district" />
-  <poly-line
-    layerName="高速"
-    :hasMaterial="true"
-    v-if="ready"
-    :active="fastRoad"
-  />
-  <poly-line
-    layerName="省道"
+
+  <!-- <poly-line
+    layerName="gzs_road"
     :hasMaterial="true"
     :materialStyle="{ width: 10 }"
     v-if="ready"
-    :active="provinceRoad"
-  />
+    :active="road"
+  /> -->
 
   <div class="layer-panel">
     <div class="layer-item">
@@ -55,8 +50,7 @@
       </div>
       <div class="layer-switch">
         <el-checkbox v-model="district">行政区划</el-checkbox>
-        <el-checkbox v-model="fastRoad">高速路</el-checkbox>
-        <el-checkbox v-model="provinceRoad">省道</el-checkbox>
+        <el-checkbox v-model="road">道路</el-checkbox>
       </div>
     </div>
 
@@ -101,8 +95,7 @@ export default {
       youShi: false,
       focusProvince: false,
       district: true,
-      fastRoad: false,
-      provinceRoad: false,
+      road: false,
       baseMap: "satellite",
     };
   },

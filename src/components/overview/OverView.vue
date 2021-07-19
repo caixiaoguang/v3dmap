@@ -67,7 +67,7 @@ export default {
         const item = data[i];
         const entity = new Cesium.Entity({
           id: item["旅游景区名称"],
-          position: Cesium.Cartesian3.fromDegrees(item.x, item.y, 0),
+          position: Cesium.Cartesian3.fromDegrees(item.x, item.y, 10),
           properties: {
             index: i,
           },

@@ -25,39 +25,69 @@ export default {
     lineStyle: {},
   },
   created() {
-    this.addGeojsonLayer();
+    // this.addGeojsonLayer();
+    this.addLayer();
   },
   watch: {
     active(newVal) {
-      this.layer && (this.layer.show = newVal);
+      this.graphicLayer && (this.layer.show = newVal);
     },
   },
   methods: {
-    addGeojsonLayer() {
-      let style;
-      if (this.hasMaterial) {
-        style = Object.assign(defaultMaterialStyle, this.materialStyle);
-      } else {
-        style = Object.assign(defaultLineStyle, this.lineStyle);
-      }
+    addLayer() {
+      this.graphicLayer = new mars3d.layer.GraphicLayer();
+      $map.addLayer(this.graphicLayer);
 
-      this.layer = new mars3d.layer.GeoJsonLayer({
+      Cesium.Resource.fetchJson(`${baseUrl}static/${this.layerName}.json`).then(
+        (geojson) => {
+          this.addGraphics(geojson);
+        }
+      );
+    },
+    addGraphics(geojson) {
+      let positions = [];
+      console.log(geojson);
+      geojson.features.forEach((feature) => {
+        positions = positions.concat(feature.geometry.coordinates[0]);
+      });
+
+      // console.log(positions);
+
+      const primitive = new mars3d.graphic.PolylinePrimitive({
+        positions: positions,
+        style: {
+          width: 6,
+          material: mars3d.MaterialUtil.createMaterial(
+            mars3d.MaterialType.LineFlow,
+            {
+              image: require("../assets/img/LinkPulse.png"),
+              color: Cesium.Color.CORAL,
+              repeat: new Cesium.Cartesian2(10.0, 1.0),
+              speed: 1,
+            }
+          ),
+        },
+      });
+      this.graphicLayer.addGraphic(primitive);
+    },
+    addGeojsonLayer() {
+      this.graphicLayer = new mars3d.layer.GraphicLayer();
+      $map.addLayer(this.graphicLayer);
+
+      const layer = new mars3d.layer.GeoJsonLayer({
         name: this.layerName,
         url: `${baseUrl}static/${this.layerName}.json`,
-        symbol: {
-          styleOptions: {
-            ...style,
-            clampToGround: true,
-          },
+        onCreateGraphic: (data) => {
+          console.log(data);
         },
-        // popup: "{NAME}",
       });
-      this.layer.show = this.active;
-      $map.addLayer(this.layer);
+      $map.addLayer(layer);
+      layer.show = false;
+      this.graphicLayer.show = this.active;
     },
   },
   beforeUnmount() {
-    this.layer && $map.removeLayer(this.layer);
+    this.graphicLayer && $map.removeLayer(this.graphicLayer);
   },
 };
 </script>
