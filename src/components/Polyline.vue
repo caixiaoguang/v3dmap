@@ -30,45 +30,40 @@ export default {
   },
   watch: {
     active(newVal) {
-      this.graphicLayer && (this.layer.show = newVal);
+      this.graphicLayer && (this.graphicLayer.show = newVal);
     },
   },
   methods: {
     addLayer() {
       this.graphicLayer = new mars3d.layer.GraphicLayer();
       $map.addLayer(this.graphicLayer);
-
-      Cesium.Resource.fetchJson(`${baseUrl}static/${this.layerName}.json`).then(
-        (geojson) => {
-          this.addGraphics(geojson);
-        }
-      );
+      Cesium.GeoJsonDataSource.load(
+        `${baseUrl}static/${this.layerName}.json`
+      ).then((dataSource) => {
+        this.addGraphics(dataSource);
+      });
     },
-    addGraphics(geojson) {
+    addGraphics(dataSource) {
       let positions = [];
-      console.log(geojson);
-      geojson.features.forEach((feature) => {
-        positions = positions.concat(feature.geometry.coordinates[0]);
+      dataSource.entities.values.forEach((feature) => {
+        const primitive = new mars3d.graphic.PolylinePrimitive({
+          positions: feature.polyline.positions._value,
+          style: {
+            width: 6,
+            material: mars3d.MaterialUtil.createMaterial(
+              mars3d.MaterialType.LineFlow,
+              {
+                image: require("../assets/img/LinkPulse.png"),
+                color: Cesium.Color.CORAL,
+                repeat: new Cesium.Cartesian2(10.0, 1.0),
+                speed: 1,
+              }
+            ),
+          },
+        });
+        this.graphicLayer.show = this.active;
+        this.graphicLayer.addGraphic(primitive);
       });
-
-      // console.log(positions);
-
-      const primitive = new mars3d.graphic.PolylinePrimitive({
-        positions: positions,
-        style: {
-          width: 6,
-          material: mars3d.MaterialUtil.createMaterial(
-            mars3d.MaterialType.LineFlow,
-            {
-              image: require("../assets/img/LinkPulse.png"),
-              color: Cesium.Color.CORAL,
-              repeat: new Cesium.Cartesian2(10.0, 1.0),
-              speed: 1,
-            }
-          ),
-        },
-      });
-      this.graphicLayer.addGraphic(primitive);
     },
     addGeojsonLayer() {
       this.graphicLayer = new mars3d.layer.GraphicLayer();
