@@ -16,6 +16,12 @@
     :active="road"
   /> -->
 
+  <vc-primitive-tileset
+    url="http://159.75.121.194/xingyi/tileset.json"
+    @readyPromise="onTilesetReady"
+    v-if="photo"
+  ></vc-primitive-tileset>
+
   <div class="layer-panel">
     <div class="layer-item">
       <div class="layer-name">
@@ -65,11 +71,39 @@
         <el-checkbox v-model="focusProvince">重点县</el-checkbox>
       </div>
     </div>
+
+    <div class="layer-item">
+      <div class="layer-name">
+        <i class="el-icon-sunny"></i>
+        <span>三维图层</span>
+      </div>
+      <div class="layer-switch">
+        <el-checkbox v-model="photo">倾斜摄影</el-checkbox>
+        <el-checkbox v-model="single">单体建筑</el-checkbox>
+        <div class="slider-wrap">
+          <span class="slider-name">经度：</span>
+          <el-slider
+            v-model="longitude"
+            :step="0.01"
+            :min="103"
+            :max="109"
+          ></el-slider>
+          <span class="slider-name">纬度：</span>
+          <el-slider
+            v-model="latitude"
+            :step="0.01"
+            :min="24"
+            :max="30"
+          ></el-slider>
+          <span class="slider-name">高度：</span>
+          <el-slider v-model="height" :step="1" :min="0" :max="500"></el-slider>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, getCurrentInstance } from "vue";
 import { createSnowStage, createRainStage } from "@/utils/weather_glsl.js";
 import OverView from "@/components/overview/OverView";
 import CylinderYouShi from "@/components/CylinderYouShi";
@@ -97,6 +131,11 @@ export default {
       district: true,
       road: false,
       baseMap: "satellite",
+      photo: false,
+      single: false,
+      longitude: "",
+      latitude: "",
+      height: "",
     };
   },
 
@@ -121,6 +160,41 @@ export default {
   mounted() {},
 
   methods: {
+    onTilesetReady(tileset, viewer) {
+
+      const cartographic = Cesium.Cartographic.fromCartesian(
+        tileset.boundingSphere.center
+      );
+
+      console.log(tileset.boundingSphere.center);
+
+      const surface = Cesium.Cartesian3.fromRadians(
+        cartographic.longitude,
+        cartographic.latitude,
+        // cartographic.height
+        0
+      );
+
+      console.log(surface);
+
+      const offset = Cesium.Cartesian3.fromRadians(
+        cartographic.longitude,
+        cartographic.latitude,
+        -1135
+      );
+      const translation = Cesium.Cartesian3.subtract(
+        offset,
+        surface,
+        new Cesium.Cartesian3()
+      );
+      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+      viewer.zoomTo(tileset);
+    },
+    onSingleTilesetReady(tileset, viewer) {
+      const cartographic = Cesium.Cartographic.fromCartesian(
+        tileset.boundingSphere.center
+      );
+    },
     changeBaseMap(newVal) {
       $map.addLayer(this[newVal]);
       $map.removeLayer(this.activeBasemap);
@@ -200,6 +274,7 @@ $bgColor: #3f4854;
   padding: 12px 15px;
   background-color: $bgColor;
   border: 2px solid #275d926e;
+  color: #fff;
 
   .layer-item {
     margin-bottom: 10px;
@@ -219,6 +294,10 @@ $bgColor: #3f4854;
     .layer-switch {
       padding: 5px;
     }
+  }
+  .slider-wrap {
+    padding-top: 10px;
+    font-size: 14px;
   }
 }
 </style>

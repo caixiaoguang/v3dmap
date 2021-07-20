@@ -31,10 +31,6 @@
 
       <!-- <vc-drawings></vc-drawings> -->
 
-      <!-- <vc-primitive-tileset
-        url="http://159.75.121.194/xingyi/tileset.json"
-        @readyPromise="onTilesetReady"
-      ></vc-primitive-tileset> -->
     </vc-viewer>
   </div>
 </template>
@@ -73,30 +69,7 @@ export default {
 
       // viewer.scene.globe.depthTestAgainstTerrain = true;
     },
-    onTilesetReady(tileset, viewer) {
-      const cartographic = Cesium.Cartographic.fromCartesian(
-        tileset.boundingSphere.center
-      );
-
-      const surface = Cesium.Cartesian3.fromRadians(
-        cartographic.longitude,
-        cartographic.latitude,
-        // cartographic.height
-        0
-      );
-      const offset = Cesium.Cartesian3.fromRadians(
-        cartographic.longitude,
-        cartographic.latitude,
-        -1135
-      );
-      const translation = Cesium.Cartesian3.subtract(
-        offset,
-        surface,
-        new Cesium.Cartesian3()
-      );
-      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
-      viewer.zoomTo(tileset);
-    },
+  
     measureEvt(e) {
       console.log(e);
     },
