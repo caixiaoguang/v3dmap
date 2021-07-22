@@ -87,6 +87,7 @@
             :step="0.01"
             :min="103"
             :max="109"
+            @change="positionModify"
           ></el-slider>
           <span class="slider-name">纬度：</span>
           <el-slider
@@ -94,9 +95,16 @@
             :step="0.01"
             :min="24"
             :max="30"
+            @change="positionModify"
           ></el-slider>
           <span class="slider-name">高度：</span>
-          <el-slider v-model="height" :step="1" :min="0" :max="500"></el-slider>
+          <el-slider
+            v-model="height"
+            :step="1"
+            :min="0"
+            :max="500"
+            @change="positionModify"
+          ></el-slider>
         </div>
       </div>
     </div>
@@ -161,39 +169,62 @@ export default {
 
   methods: {
     onTilesetReady(tileset, viewer) {
-
       const cartographic = Cesium.Cartographic.fromCartesian(
         tileset.boundingSphere.center
       );
+      this.tileset = tileset;
+      this.longitude = this.originLon = Cesium.Math.toDegrees(
+        cartographic.longitude
+      );
+      this.latitude = this.originLat = Cesium.Math.toDegrees(
+        cartographic.latitude
+      );
+      this.height = 0;
 
-      console.log(tileset.boundingSphere.center);
+      this.positionModify();
 
-      const surface = Cesium.Cartesian3.fromRadians(
-        cartographic.longitude,
-        cartographic.latitude,
+      // viewer.zoomTo(tileset);
+    },
+    onSingleTilesetReady(tileset, viewer) {
+      const cartographic = Cesium.Cartographic.fromCartesian(
+        tileset.boundingSphere.center
+      );
+    },
+    positionModify() {
+      const surface = Cesium.Cartesian3.fromDegrees(
+        this.originLon,
+        this.originLat,
         // cartographic.height
         0
       );
 
-      console.log(surface);
-
-      const offset = Cesium.Cartesian3.fromRadians(
-        cartographic.longitude,
-        cartographic.latitude,
-        -1135
+      const offset = Cesium.Cartesian3.fromDegrees(
+        this.longitude,
+        this.latitude,
+        this.height - 1135
       );
       const translation = Cesium.Cartesian3.subtract(
         offset,
         surface,
         new Cesium.Cartesian3()
       );
-      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
-      viewer.zoomTo(tileset);
-    },
-    onSingleTilesetReady(tileset, viewer) {
-      const cartographic = Cesium.Cartographic.fromCartesian(
-        tileset.boundingSphere.center
+
+      this.tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+
+      const destination = new mars3d.LatLngPoint(
+        this.longitude,
+        this.latitude,
+        100
       );
+
+      $map.flyToPoint(destination, {
+        radius: 500, //距离目标点的距离
+        pitch: -30,
+        duration: 4,
+        complete: (e) => {
+          //飞行完成回调方法
+        },
+      });
     },
     changeBaseMap(newVal) {
       $map.addLayer(this[newVal]);
