@@ -2,13 +2,13 @@
   <div class="analysis-panel" v-show="active">
     <div class="title">统计情况</div>
     <div class="content">
-      <div class="cell" v-for="item in anaData" :key="item">
+      <div class="cell" v-for="item in Object.keys(anaData)" :key="item">
         <div class="name">
           <i class="el-icon-pie-chart"></i>
-          {{ item["优势度等级"] }}
+          {{ item }}
         </div>
         <div class="count">
-          <span>{{ item["个数"] }}</span> 个
+          <span>{{ anaData[item] }}</span> 个
         </div>
       </div>
     </div>
@@ -17,6 +17,7 @@
 
 <script>
 import { loadRemoteFile } from "@/utils/utils.js";
+import geostats from "geostats";
 
 import center from "@/utils/center.json";
 
@@ -46,23 +47,57 @@ export default {
     async loadYouSHiData() {
       const excelData = await loadRemoteFile(youshiUrl);
       const data = excelData[0];
-      this.anaData = excelData[1];
+      // this.anaData = excelData[1];
       if (!this.graphicLayer) {
         this.graphicLayer = new mars3d.layer.GraphicLayer();
         $map.addLayer(this.graphicLayer);
       }
 
+      let values = [];
       for (let i = 0; i < data.length; i++) {
         const el = data[i];
+        values.push(el["优势度"]);
+      }
+      const numStats = {
+        优势区: 0,
+        中等区: 0,
+        劣势区: 0,
+      };
+      const serie = new geostats(values);
+      serie.setPrecision(3);
+      serie.getClassJenks(3);
+      const bounds = serie.bounds;
+      serie.serie.forEach((el) => {
+        if (el >= bounds[0] && el < bounds[1]) {
+          numStats["劣势区"]++;
+        }
+        if (el >= bounds[1] && el < bounds[2]) {
+          numStats["中等区"]++;
+        }
+        if (el >= bounds[2] && el < bounds[3]) {
+          numStats["优势区"]++;
+        }
+      });
+      this.anaData = numStats;
+
+      for (let i = 0; i < data.length; i++) {
+        let color;
+        const el = data[i];
         const name = el["行政区"];
+        const youshiValue = el["优势度"];
         const lngLat = this.getPosition(name);
         if (!lngLat) continue;
         const position = Cesium.Cartesian3.fromDegrees(...lngLat, 10);
         const height = el["优势度"] * 10000;
         // const color = el[]
         const html = `区县：${name}<br>优势度：${el["优势度"].toFixed(3)}`;
-
-        let color = Cesium.Color.fromHsl(0.6 - el["优势度"] * 0.1, 1.0, 0.5);
+        if (youshiValue >= bounds[0] && youshiValue < bounds[1]) {
+          color = Cesium.Color.fromHsl(0.6 - 0.3, 1.0, 0.5);
+        } else if (youshiValue >= bounds[1] && youshiValue < bounds[2]) {
+          color = Cesium.Color.fromHsl(0.6 - 0.01, 1.0, 0.5);
+        } else if (youshiValue >= bounds[2] && youshiValue < bounds[3]) {
+          color = Cesium.Color.fromHsl(0.6 - 0.5, 1.0, 0.5);
+        }
 
         this.createZT(position, height, color, html);
       }

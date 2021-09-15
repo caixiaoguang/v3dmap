@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div class="layer-item">
+    <div class="layer-item" v-if="layerType === 'travel'">
       <div class="layer-name">
         <i class="el-icon-sunny"></i>
         <span>旅游资源</span>
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="layer-item">
+    <div class="layer-item" v-if="layerType === 'threeD'">
       <div class="layer-name">
         <i class="el-icon-sunny"></i>
         <span>三维图层</span>
@@ -121,6 +121,7 @@ import FocusProvince from "@/components/FocusProvince";
 export default {
   props: {
     ready: false,
+    layerType: "",
   },
   components: {
     OverView,
@@ -141,9 +142,9 @@ export default {
       baseMap: "satellite",
       photo: false,
       single: false,
-      longitude: "",
-      latitude: "",
-      height: "",
+      longitude: 0,
+      latitude: 0,
+      height: 0,
     };
   },
 
@@ -233,8 +234,6 @@ export default {
     },
     tianDiTuReady(obj) {
       const { vm } = obj;
-
-      console.log(vm);
       this.tianDiTu = vm;
     },
     handleSnow(value) {

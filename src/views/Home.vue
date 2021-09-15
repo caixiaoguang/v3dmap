@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <!-- <head-title /> -->
+    <head-title @changeLayerType="changeLayerType"/>
     <div class="baselayer-control"></div>
 
     <vc-viewer
@@ -9,7 +9,7 @@
       :fullscreenButton="true"
       @ready="viewerReady"
     >
-      <layer :ready="ready" />
+      <layer :ready="ready" :layerType="layerType" />
 
       <!-- <vc-provider-terrain-tianditu :token="token" /> -->
 
@@ -24,7 +24,6 @@
         position="top-right"
         :measurements="['polyline', 'area', 'vertical']"
         :offset="[130, 30]"
-        @measureEvt="measureEvt"
       />
 
       <!-- <terrain-clip /> -->
@@ -52,6 +51,7 @@ export default {
       token: "164d40b29ad7c5c159c3b51a20c584d8",
       measureOptions: { color: "#3f4854" },
       ready: false,
+      layerType:'travel'
     };
   },
   methods: {
@@ -69,10 +69,9 @@ export default {
 
       // viewer.scene.globe.depthTestAgainstTerrain = true;
     },
-  
-    measureEvt(e) {
-      console.log(e);
-    },
+    changeLayerType(type){
+      this.layerType = type
+    }
   },
 };
 </script>

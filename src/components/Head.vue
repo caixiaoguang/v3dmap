@@ -1,13 +1,19 @@
 <template>
   <div class="head">
     <h2>旅游地理图谱信息系统</h2>
-    <el-button class="btn1">场景三维模拟</el-button>
-    <el-button class="btn2">全省旅游概况</el-button>
+    <el-button class="btn1" @click="changeLayerType('threeD')">场景三维模拟</el-button>
+    <el-button class="btn2" @click="changeLayerType('travel')">全省旅游概况</el-button>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    changeLayerType(type) {
+      this.$emit("changeLayerType", type);
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -16,7 +22,7 @@ export default {};
     background-color: #91dbef69;
     border: 1px solid #34c9ee;
     color: #34c9ee;
-    transform: translateY(-30px) ;
+    transform: translateY(-30px);
     &.btn1 {
       margin-right: 500px;
     }

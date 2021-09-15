@@ -228,7 +228,7 @@ export default {
     .cell {
       width: 50%;
       &:last-child{
-        padding-bottom: 20px;
+        // padding-bottom: 20px;
       }
       .count {
         padding: 4px;

@@ -72,8 +72,21 @@ export default {
       const layer = new mars3d.layer.GeoJsonLayer({
         name: this.layerName,
         url: `${baseUrl}static/${this.layerName}.json`,
+        symbol: {
+          styleOptions: {
+            // outline: true,
+            // outlineWidth: 2,
+            // color: "#34c9ee83",
+            materialType: "PolylineGlow",
+            glowPower: 0.06, //发光强度
+            width: 30, //线宽
+            color: "#34c9ee",
+            opacity: 0.9,
+            clampToGround: true,
+          },
+        },
         onCreateGraphic: (data) => {
-          console.log(data);
+          // console.log(data);
         },
       });
       $map.addLayer(layer);
